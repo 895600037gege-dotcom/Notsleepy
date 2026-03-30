@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Not Sleepy Yet?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #12101a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow: hidden;
+    }
+
+    .bg-glow {
+      position: fixed;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #3b1f6a22 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
+      animation: pulse-glow 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    }
+
+    .stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #fff;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.1; }
+      50% { opacity: 0.65; }
+    }
+
+    .wrap {
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyeball {
+      font-size: 3.2rem;
+      display: block;
+      margin-bottom: 0.6rem;
+      animation: blink 4s ease-in-out infinite;
+      cursor: default;
+    }
+
+    @keyframes blink {
+      0%, 90%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.1); }
+    }
+
+    .top-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #e8deff;
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.01em;
+    }
+
+    .top-sub {
+      font-size: 0.7rem;
+      color: #5a4a78;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+    }
+
+    .message-box {
+      min-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+      padding: 0 0.5rem;
+    }
+
+    .message-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.35rem;
+      line-height: 1.65;
+      color: #f0e8ff;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .message-text.idle {
+      color: #6a5a88;
+      font-size: 0.88rem;
+      font-family: 'Nunito', sans-serif;
+      font-style: normal;
+      font-weight: 400;
+    }
+
+    .message-text.show { opacity: 1; transform: translateY(0); }
+    .message-text.out  { opacity: 0; transform: translateY(-10px); }
+
+    .btn {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #e8deff;
+      background: transparent;
+      border: 1.5px solid #5a3a9a;
+      border-radius: 100px;
+      padding: 0.9rem 2.4rem;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: transform 0.12s, background 0.3s, border-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 0 0 0 transparent;
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #3b1f6a00, #7b4fd000);
+      border-radius: 100px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      border-color: #9a6ae0;
+      box-shadow: 0 0 20px #7b4fd033;
+    }
+
+    .btn:hover::before {
+      background: linear-gradient(135deg, #3b1f6a44, #7b4fd022);
+    }
+
+    .btn:active { transform: scale(0.95); }
+
+    .counter-row {
+      margin-top: 2rem;
+      font-size: 0.65rem;
+      color: #4a3a68;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #221830;
+      transition: background 0.5s;
+    }
+
+    .dot.lit  { background: #9a6ae0; }
+    .dot.warm { background: #e0a0c8; }
+
+    .footer {
+      margin-top: 3.5rem;
+      font-size: 0.58rem;
+      color: #2e2245;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="stars" id="stars"></div>
+
+<div class="wrap">
+  <span class="eyeball">👁️</span>
+  <div class="top-label">Not Sleepy Yet?</div>
+  <div class="top-sub">a wellness check from your conscience</div>
+
+  <div class="message-box">
+    <div class="message-text idle show" id="msg">Go ahead. Tell me you're not tired. I dare you.</div>
+  </div>
+
+  <button class="btn" id="mainBtn" onclick="pressIt()">I'm not sleepy yet</button>
+
+  <div class="counter-row">Denied sleep <span id="countNum">0</span> time(s)</div>
+  <div class="dots" id="dots"></div>
+
+  <div class="footer">Your circadian rhythm has left the chat ✦</div>
+</div>
+
+<script>
+  const messages = [
+    { text: "Sure you're not. That's what they all say.",                                        emoji: "🙂" },
+    { text: "Interesting. Your eyelids disagree.",                                               emoji: "😑" },
+    { text: "Technically you're right. Medically, not so much.",                                 emoji: "🥱" },
+    { text: "At this point you're just gaslighting yourself.",                                   emoji: "😬" },
+    { text: "Your under-eye circles have started filing tax returns.",                           emoji: "🐼" },
+    { text: "I admire the commitment. The consequences, less so.",                               emoji: "🏳️" },
+    { text: "You are the reason scientists study sleep deprivation.",                            emoji: "🔬" },
+    { text: "Your pillow has moved on. It's seeing someone else now.",                           emoji: "💔" },
+    { text: "Not sleepy? Correct. Deeply unwell? Also correct.",                                 emoji: "⏳" },
+    { text: "Goodnight. I hope tomorrow is kinder to you than you were to yourself tonight.",    emoji: "🌙" },
+  ];
+
+  let count = 0;
+
+  function pressIt() {
+    const msgEl = document.getElementById('msg');
+    msgEl.classList.remove('show');
+    msgEl.classList.add('out');
+
+    setTimeout(() => {
+      count++;
+      document.getElementById('countNum').textContent = count;
+
+      const idx = Math.min(count - 1, messages.length - 1);
+      const m = messages[idx];
+
+      msgEl.className = 'message-text';
+      msgEl.textContent = m.emoji + '\u2002' + m.text;
+      msgEl.classList.add('show');
+
+      renderDots();
+    }, 240);
+  }
+
+  function renderDots() {
+    const dotsEl = document.getElementById('dots');
+    dotsEl.innerHTML = '';
+    for (let i = 0; i < count && i < messages.length; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot ' + (i >= 4 ? 'warm' : 'lit');
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function makeStars() {
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 60; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2 + 0.8;
+      s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-delay:${(Math.random()*4).toFixed(2)}s;animation-duration:${(2.5+Math.random()*3).toFixed(2)}s`;
+      container.appendChild(s);
+    }
+  }
+
+  makeStars();
+</script>
+</body>
+</html>
